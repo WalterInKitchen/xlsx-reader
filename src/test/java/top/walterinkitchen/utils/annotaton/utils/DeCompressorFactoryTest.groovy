@@ -22,28 +22,38 @@ class DeCompressorFactoryTest extends Specification {
     def 'unzip an zip file return an folder contains all content files'() {
         given:
         def deCompressor = DeCompressorFactory.getInstance()
-        def zip = ResourceFileUtils.getResources('zip/cities.zip')
+        def zip = ResourceFileUtils.getResources('zip/docs.xlsx')
 
         when:
         def folder = deCompressor.decompressZip(zip)
 
         then:
         folder.isDirectory()
-        FilenameUtils.getBaseName(folder.getName()).startsWith("cities")
-        listFiles(folder) == ['beijing', 'guangzhou', 'shanghai.txt', 'tianjing']
+        listFilesByTree(folder, null) == ['[Content_Types].xml', '_rels/.rels', 'docProps/app.xml', 'docProps/core.xml',
+                                          'xl/_rels/workbook.xml.rels', 'xl/sharedStrings.xml', 'xl/styles.xml',
+                                          'xl/theme/theme1.xml', 'xl/workbook.xml', 'xl/worksheets/sheet1.xml', 'xl/worksheets/sheet2.xml']
 
         cleanup:
         FileUtils.deleteQuietly(folder)
     }
 
-    ArrayList<String> listFiles(File file) {
-        if (!file.isDirectory()) {
-            return []
+    List<String> listFilesByTree(File file, String parent) {
+        List<String> result = []
+        def files = file.listFiles()
+        Arrays.sort(files)
+
+        String path = parent == null ? "" : parent + "/"
+        for (final def fl in files) {
+            def name = FilenameUtils.getName(fl.getName())
+            if (fl.isFile()) {
+                result.add(path + name)
+                continue
+            }
+            if (fl.isDirectory()) {
+                def res = listFilesByTree(fl, path + name)
+                result.addAll(res)
+            }
         }
-        File folder = file.listFiles()[0];
-        def list = folder.listFiles().collect { fl -> FilenameUtils.getName(fl.getName()) }
-                .sort()
-                .toList()
-        return list
+        return result
     }
 }

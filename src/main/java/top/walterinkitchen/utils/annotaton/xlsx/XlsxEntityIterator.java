@@ -1,4 +1,6 @@
-package top.walterinkitchen.utils.annotaton;
+package top.walterinkitchen.utils.annotaton.xlsx;
+
+import top.walterinkitchen.utils.annotaton.EntityIterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +21,7 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
      * @param tClass class
      * @param file   file
      */
-    XlsxEntityIterator(File file, Class<T> tClass) {
+    public XlsxEntityIterator(File file, Class<T> tClass) {
         this.file = file;
         this.tClass = tClass;
     }
