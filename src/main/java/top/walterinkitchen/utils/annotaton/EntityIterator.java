@@ -1,5 +1,6 @@
 package top.walterinkitchen.utils.annotaton;
 
+import java.io.Closeable;
 import java.util.Iterator;
 
 /**
@@ -8,5 +9,5 @@ import java.util.Iterator;
  * @author walter
  * @since 1.0
  */
-public interface EntityIterator<T> extends Iterator<T> {
+public interface EntityIterator<T> extends Iterator<T>, Closeable {
 }

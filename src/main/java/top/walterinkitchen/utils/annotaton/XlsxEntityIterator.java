@@ -1,6 +1,7 @@
 package top.walterinkitchen.utils.annotaton;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * xlsx entity iterator
@@ -31,5 +32,10 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
     @Override
     public T next() {
         return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }

@@ -13,7 +13,7 @@ import top.walterinkitchen.utils.bean.Book
 class XlsxToBeanReaderTest extends Specification {
     def 'read at sheet1 when sheet is in default configuration'() {
         given:
-        File file = openResourceAsFile('xlsx/books.xlsx');
+        File file = ResourceFileUtils.getResources('xlsx/books.xlsx');
         EntityIterator<Book> entityIterator = EntityIteratorFactory.buildXlsxEntityIterator(file, Book.class);
 
         when:
@@ -35,11 +35,6 @@ class XlsxToBeanReaderTest extends Specification {
 
     String stringfyBook(book) {
         return 'name:' + book.name + ',author:' + book.author + ',isbn:' + book.isbn;
-    }
-
-    File openResourceAsFile(String src) {
-        URL resource = getClass().getClassLoader().getResource(src)
-        return new File(resource.toURI());
     }
 
     <T> List<T> readAllInIterator(EntityIterator<T> iterator) {
