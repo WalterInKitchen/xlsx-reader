@@ -22,10 +22,10 @@ public interface XlsxFileContainer extends Closeable {
     /**
      * get sheet by index
      *
-     * @param index index
+     * @param sheetId sheet id(start from 1)
      * @return sheet file
      */
-    Optional<File> getSheetAt(int index);
+    Optional<File> getSheetById(int sheetId);
 
     /**
      * get sharedString file

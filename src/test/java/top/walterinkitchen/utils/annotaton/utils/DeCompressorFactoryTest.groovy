@@ -22,7 +22,7 @@ class DeCompressorFactoryTest extends Specification {
     def 'unzip an zip file return an folder contains all content files'() {
         given:
         def deCompressor = DeCompressorFactory.getInstance()
-        def zip = ResourceFileUtils.getResources('zip/docs.xlsx')
+        def zip = ResourceFileUtils.getResources('xlsx/docs.xlsx')
 
         when:
         def folder = deCompressor.decompressZip(zip)
