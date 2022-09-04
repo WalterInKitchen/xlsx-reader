@@ -1,4 +1,4 @@
-package top.walterinkitchen.utils.annotaton.xlsx;
+package top.walterinkitchen.utils.xlsx;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -93,8 +93,8 @@ public class DecompressedXlsxFile implements XlsxFileContainer {
             NodeList workbook = doc.getElementsByTagName("workbook");
             Node item = workbook.item(0);
             return getSheetNameInWorkBook(item);
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            throw new RuntimeException(e);
+        } catch (ParserConfigurationException | IOException | SAXException exc) {
+            throw new RuntimeException(exc);
         }
     }
 

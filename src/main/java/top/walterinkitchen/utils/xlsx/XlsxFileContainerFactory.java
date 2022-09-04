@@ -1,8 +1,8 @@
-package top.walterinkitchen.utils.annotaton.xlsx;
+package top.walterinkitchen.utils.xlsx;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import top.walterinkitchen.utils.annotaton.utils.DeCompressorFactory;
+import top.walterinkitchen.utils.utils.DeCompressorFactory;
 
 import java.io.File;
 

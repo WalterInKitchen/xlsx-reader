@@ -1,4 +1,4 @@
-package top.walterinkitchen.utils.annotaton;
+package top.walterinkitchen.utils;
 
 import java.io.Closeable;
 import java.util.Iterator;

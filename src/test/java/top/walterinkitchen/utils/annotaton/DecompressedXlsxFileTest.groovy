@@ -3,7 +3,7 @@ package top.walterinkitchen.utils.annotaton
 import org.apache.commons.io.IOUtils
 import spock.lang.Specification
 import top.walterinkitchen.utils.ResourceFileUtils
-import top.walterinkitchen.utils.annotaton.xlsx.XlsxFileContainerFactory
+import top.walterinkitchen.utils.xlsx.XlsxFileContainerFactory
 
 /**
  * DecompressedXlsxFileTest

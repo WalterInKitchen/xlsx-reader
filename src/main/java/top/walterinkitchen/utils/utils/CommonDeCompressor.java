@@ -1,4 +1,4 @@
-package top.walterinkitchen.utils.annotaton.utils;
+package top.walterinkitchen.utils.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

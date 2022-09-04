@@ -1,4 +1,4 @@
-package top.walterinkitchen.utils.annotaton.utils
+package top.walterinkitchen.utils.utils
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils

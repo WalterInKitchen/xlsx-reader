@@ -1,8 +1,6 @@
 package top.walterinkitchen.utils
 
 import spock.lang.Specification
-import top.walterinkitchen.utils.annotaton.EntityIterator
-import top.walterinkitchen.utils.annotaton.EntityIteratorFactory
 import top.walterinkitchen.utils.bean.Book
 
 /**
