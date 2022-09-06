@@ -19,7 +19,7 @@ public @interface Sheet {
      *
      * @return sheet name
      */
-    String name() default "sheet1";
+    String name() default "Sheet1";
 
     /**
      * if useIndex is true,use index to location sheet.

@@ -28,7 +28,10 @@ class SharedStringTest extends Specification {
         2     | 'Field3'
         3     | 'Field4'
         4     | 'AA'
+        7     | 'DD'
         5     | 'AB'
+        6     | 'CC'
+        7     | 'DD'
     }
 
     def 'get string by index return null value if index not exist'() {

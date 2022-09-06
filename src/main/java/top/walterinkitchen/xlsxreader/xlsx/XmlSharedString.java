@@ -3,13 +3,14 @@ package top.walterinkitchen.xlsxreader.xlsx;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Xml based shared string
@@ -20,8 +21,7 @@ import java.util.Map;
 public class XmlSharedString implements SharedString {
     private final File xmlFile;
     private XMLEventReader eventReader = null;
-    private int cachedIndex = 0;
-    private final Map<Integer, String> cached = new HashMap<>();
+    private final List<String> cached = new ArrayList<>();
 
     /**
      * constructor
@@ -38,31 +38,98 @@ public class XmlSharedString implements SharedString {
         if (index < 0) {
             return null;
         }
-        if (index >= cachedIndex) {
+        if (index >= this.cached.size()) {
             cacheStringToIndex(index);
+        }
+        if (index >= this.cached.size()) {
+            return null;
         }
         return this.cached.get(index);
     }
 
-    private void cacheStringToIndex(int index) {
-        int curIdx = this.cachedIndex;
-        while (this.eventReader.hasNext() && curIdx <= index) {
+    private void cacheStringToIndex(int readTo) {
+        int curIdx = this.cached.size();
+        while (this.eventReader.hasNext() && curIdx <= readTo) {
             try {
                 XMLEvent evt = this.eventReader.nextEvent();
-                if (!evt.isStartElement()) {
-                    continue;
-                }
-                StartElement startElement = evt.asStartElement();
-                if (startElement.getName().getLocalPart().equals("t")) {
-                    XMLEvent next = this.eventReader.nextEvent();
-                    String str = next.asCharacters().getData();
-                    this.cached.put(curIdx++, str);
+                if (isStartOfEvent(evt, "si")) {
+                    readValueInSi();
                 }
             } catch (XMLStreamException exc) {
                 throw new RuntimeException(exc);
             }
         }
-        this.cachedIndex = Math.max(curIdx, this.cachedIndex);
+    }
+
+    private void readValueInSi() throws XMLStreamException {
+        while (this.eventReader.hasNext()) {
+            XMLEvent evt = this.eventReader.nextEvent();
+            if (isEndOfEvent(evt, "si")) {
+                return;
+            }
+            if (isStartOfEvent(evt, "t")) {
+                readValueInT();
+                readToTillEnd("t");
+                break;
+            }
+            if (isStartOfEvent(evt, "r")) {
+                readValueInR();
+                readToTillEnd("r");
+                break;
+            }
+        }
+        readToTillEnd("si");
+    }
+
+    private void readValueInR() throws XMLStreamException {
+        while (this.eventReader.hasNext()) {
+            XMLEvent evt = this.eventReader.nextEvent();
+            if (isStartOfEvent(evt, "t")) {
+                readValueInT();
+                readToTillEnd("r");
+                break;
+            }
+            if (isEndOfEvent(evt, "r")) {
+                break;
+            }
+        }
+    }
+
+    private void readValueInT() throws XMLStreamException {
+        if (!this.eventReader.hasNext()) {
+            return;
+        }
+        XMLEvent next = this.eventReader.nextEvent();
+        if (!next.isCharacters()) {
+            return;
+        }
+        String str = next.asCharacters().getData();
+        this.cached.add(str);
+    }
+
+    private void readToTillEnd(String type) throws XMLStreamException {
+        while (this.eventReader.hasNext()) {
+            XMLEvent evt = this.eventReader.nextEvent();
+            if (isEndOfEvent(evt, type)) {
+                break;
+            }
+        }
+    }
+
+    private boolean isStartOfEvent(XMLEvent evt, String type) {
+        if (!evt.isStartElement()) {
+            return false;
+        }
+        StartElement startElement = evt.asStartElement();
+        return startElement.getName().getLocalPart().equals(type);
+    }
+
+    private boolean isEndOfEvent(XMLEvent evt, String type) {
+        if (!evt.isEndElement()) {
+            return false;
+        }
+        EndElement endElement = evt.asEndElement();
+        return endElement.getName().getLocalPart().equals(type);
     }
 
     private void initIfNecessary() {

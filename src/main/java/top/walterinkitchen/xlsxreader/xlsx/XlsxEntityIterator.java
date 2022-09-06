@@ -4,6 +4,8 @@ import top.walterinkitchen.xlsxreader.EntityIterator;
 import top.walterinkitchen.xlsxreader.EntityMapper;
 
 import java.io.IOException;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * xlsx entity iterator
@@ -16,6 +18,8 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
     private final RawRowIterator rowIterator;
     private final SharedString sharedString;
     private final EntityMapper<T> entityMapper;
+
+    private final Deque<T> deque = new LinkedList<>();
 
     /**
      * constructor
@@ -30,20 +34,30 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
         this.rowIterator = rowIterator;
         this.sharedString = sharedString;
         this.entityMapper = entityMapper;
+        this.readNext();
     }
 
     @Override
     public boolean hasNext() {
-        return false;
+        return !this.deque.isEmpty();
     }
 
     @Override
     public T next() {
-        return null;
+        if (this.deque.isEmpty()) {
+            throw new RuntimeException("no more to read");
+        }
+        T res = this.deque.removeLast();
+        this.readNext();
+        return res;
     }
 
     @Override
     public void close() throws IOException {
+        this.fileContainer.close();
+    }
+
+    private void readNext() {
 
     }
 }
