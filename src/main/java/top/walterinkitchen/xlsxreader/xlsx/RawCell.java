@@ -1,7 +1,9 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * RawCell
@@ -11,8 +13,10 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RawCell {
-    private final String column;
-    private final String value;
-    private final String valueType;
+    private String column;
+    private String value;
+    private String valueType;
 }

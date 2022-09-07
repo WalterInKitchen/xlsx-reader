@@ -11,7 +11,7 @@ import top.walterinkitchen.xlsxreader.bean.Book
  * @since 1.0
  */
 class EntityMapperTest extends Specification {
-    def 'commom mapper convert map to instance'() {
+    def 'common mapper convert map to instance'() {
         given:
         def mapper = EntityMapperFactory.buildCommonEntityMapper(Book.class)
 

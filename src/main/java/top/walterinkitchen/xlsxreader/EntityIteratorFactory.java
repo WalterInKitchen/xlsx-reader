@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import top.walterinkitchen.xlsxreader.annotaton.Sheet;
 import top.walterinkitchen.xlsxreader.xlsx.RowIteratorFactory;
+import top.walterinkitchen.xlsxreader.xlsx.RowToEntityMapper;
+import top.walterinkitchen.xlsxreader.xlsx.RowToEntityMapperFactory;
 import top.walterinkitchen.xlsxreader.xlsx.SharedString;
 import top.walterinkitchen.xlsxreader.xlsx.SharedStringFactory;
 import top.walterinkitchen.xlsxreader.xlsx.XlsxEntityIterator;
@@ -32,14 +34,15 @@ public class EntityIteratorFactory {
      */
     static public <T> EntityIterator<T> buildXlsxEntityIterator(File file, Class<T> tClass) {
         XlsxFileContainer container = XlsxFileContainerFactory.createDeCompressedXlsxFile(file);
-        Optional<File> sharedStrings = container.getSharedStrings();
-        if (!sharedStrings.isPresent()) {
+        Optional<File> sharedStringsFile = container.getSharedStrings();
+        if (!sharedStringsFile.isPresent()) {
             throw new RuntimeException("sharedStrings not exist");
         }
         XmlRawRawRowIterator rowIterator = RowIteratorFactory.buildRawRowIterator(getXmlSheetFile(container, tClass));
-        SharedString xmlSharedString = SharedStringFactory.createXmlSharedString(sharedStrings.get());
+        SharedString xmlSharedString = SharedStringFactory.createXmlSharedString(sharedStringsFile.get());
         EntityMapper<T> mapper = EntityMapperFactory.buildCommonEntityMapper(tClass);
-        return new XlsxEntityIterator<>(container, rowIterator, xmlSharedString, mapper);
+        RowToEntityMapper<T> entityMapper = RowToEntityMapperFactory.buildAnnotationMapper(tClass, mapper, xmlSharedString);
+        return new XlsxEntityIterator<>(container, rowIterator, entityMapper);
     }
 
     private static <T> File getXmlSheetFile(XlsxFileContainer container, Class<T> tClass) {

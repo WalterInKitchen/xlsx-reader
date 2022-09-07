@@ -1,7 +1,9 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -13,7 +15,9 @@ import java.util.List;
  */
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RawRow {
-    private final int id;
-    private final List<RawCell> cells;
+    private int id;
+    private List<RawCell> cells;
 }

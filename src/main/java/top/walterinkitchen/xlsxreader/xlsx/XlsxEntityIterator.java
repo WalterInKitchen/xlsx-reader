@@ -1,11 +1,11 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import org.apache.commons.io.IOUtils;
 import top.walterinkitchen.xlsxreader.EntityIterator;
-import top.walterinkitchen.xlsxreader.EntityMapper;
 
-import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * xlsx entity iterator
@@ -16,8 +16,7 @@ import java.util.LinkedList;
 public class XlsxEntityIterator<T> implements EntityIterator<T> {
     private final XlsxFileContainer fileContainer;
     private final RawRowIterator rowIterator;
-    private final SharedString sharedString;
-    private final EntityMapper<T> entityMapper;
+    private final RowToEntityMapper<T> entityMapper;
 
     private final Deque<T> deque = new LinkedList<>();
 
@@ -26,13 +25,11 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
      *
      * @param fileContainer xlsx file container
      * @param rowIterator   row iterator
-     * @param sharedString  sharedString
      * @param entityMapper  entity mapper
      */
-    public XlsxEntityIterator(XlsxFileContainer fileContainer, RawRowIterator rowIterator, SharedString sharedString, EntityMapper<T> entityMapper) {
+    public XlsxEntityIterator(XlsxFileContainer fileContainer, RawRowIterator rowIterator, RowToEntityMapper<T> entityMapper) {
         this.fileContainer = fileContainer;
         this.rowIterator = rowIterator;
-        this.sharedString = sharedString;
         this.entityMapper = entityMapper;
         this.readNext();
     }
@@ -53,11 +50,20 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
     }
 
     @Override
-    public void close() throws IOException {
-        this.fileContainer.close();
+    public void close() {
+        IOUtils.closeQuietly(this.fileContainer);
     }
 
     private void readNext() {
-
+        while (this.rowIterator.hasNext()) {
+            RawRow row = this.rowIterator.next();
+            Optional<T> opt = this.entityMapper.map(row);
+            if (!opt.isPresent()) {
+                continue;
+            }
+            T entity = opt.get();
+            this.deque.addLast(entity);
+            break;
+        }
     }
 }
