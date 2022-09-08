@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Raw row iterator
@@ -24,6 +26,8 @@ public class XmlRawRawRowIterator implements RawRowIterator {
     private final File xmlSheet;
     private RawRow next;
     private XMLEventReader reader;
+
+    private static final Pattern COLUMN_PATTERN = Pattern.compile("\\d");
 
     /**
      * constructor
@@ -104,10 +108,24 @@ public class XmlRawRawRowIterator implements RawRowIterator {
         }
         String valType = tAttr == null ? "" : tAttr.getValue();
         String value = readOneCellValue(reader);
-        return RawCell.builder().column(rAttr.getValue())
+        String column = parseColumn(rAttr.getValue());
+        return RawCell.builder().column(column)
                 .valueType(valType)
                 .value(value)
                 .build();
+    }
+
+    private String parseColumn(String value) {
+        if (value == null || value.trim().equals("")) {
+            return value;
+        }
+        Matcher matcher = COLUMN_PATTERN.matcher(value);
+        if (!matcher.find()) {
+            return value;
+        }
+        String group = matcher.group();
+        int idx = value.indexOf(group);
+        return value.substring(0, idx);
     }
 
     private String readOneCellValue(XMLEventReader reader) {

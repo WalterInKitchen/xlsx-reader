@@ -32,6 +32,7 @@ class SharedStringTest extends Specification {
         5     | 'AB'
         6     | 'CC'
         7     | 'DD'
+        9     | '[清] 曹雪芹 著 / 高鹗 续'
     }
 
     def 'get string by index return null value if index not exist'() {

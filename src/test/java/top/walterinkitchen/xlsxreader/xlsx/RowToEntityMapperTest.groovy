@@ -31,13 +31,22 @@ class RowToEntityMapperTest extends Specification {
         EntityMapper<Book> mapper = Mock(EntityMapper)
         RowToEntityMapper entityMapper = RowToEntityMapperFactory.buildAnnotationMapper(Book.class, mapper, sharedString)
 
-        when: 'given header row'
+        when: 'given none header row'
         def headerRow = buildRawRow([id: '001', cells: [
-                [column: 'A2', value: '0', valueType: 's'],
-                [column: 'B2', value: '1', valueType: 's'],
-                [column: 'C2', value: '2', valueType: 's'],
-                [column: 'G2', value: '3', valueType: 's']]])
+                [column: 'G', value: '3', valueType: 's']]])
         def res = entityMapper.map(headerRow)
+
+        then: 'no entity return'
+        1 * sharedString.getByIndex(_) >> "xx"
+        !res.isPresent()
+
+        when: 'given header row'
+        headerRow = buildRawRow([id: '001', cells: [
+                [column: 'A', value: '0', valueType: 's'],
+                [column: 'B', value: '1', valueType: 's'],
+                [column: 'C', value: '2', valueType: 's'],
+                [column: 'G', value: '3', valueType: 's']]])
+        res = entityMapper.map(headerRow)
 
         then: 'no entity return'
         1 * sharedString.getByIndex(0) >> "ID"
@@ -48,10 +57,10 @@ class RowToEntityMapperTest extends Specification {
 
         when: 'given an entity row'
         def entityRow = buildRawRow([id: '002', cells: [
-                [column: 'A2', value: '4', valueType: 's'],
-                [column: 'B2', value: '5', valueType: 's'],
-                [column: 'C2', value: '6', valueType: 's'],
-                [column: 'G2', value: '7', valueType: 's']]])
+                [column: 'A', value: '4', valueType: 's'],
+                [column: 'B', value: '5', valueType: 's'],
+                [column: 'C', value: '6', valueType: 's'],
+                [column: 'G', value: '7', valueType: 's']]])
         res = entityMapper.map(entityRow)
 
         then: 'return entity == expected'

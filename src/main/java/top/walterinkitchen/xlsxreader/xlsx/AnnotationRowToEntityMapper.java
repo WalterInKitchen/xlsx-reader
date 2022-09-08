@@ -45,7 +45,7 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
         if (row == null) {
             return Optional.empty();
         }
-        if (headerColumns == null) {
+        if (this.headerColumns == null || this.headerColumns.getHeaderSize() == 0) {
             this.parseHeader(row);
             return Optional.empty();
         }
@@ -159,6 +159,10 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
 
         public String getFieldNameByColumn(String columnPos) {
             return colPosVsFieldName.getOrDefault(columnPos, null);
+        }
+
+        public int getHeaderSize() {
+            return this.colPosVsFieldName.size();
         }
     }
 

@@ -19,10 +19,10 @@ class RawRowIteratorTest extends Specification {
         List<RawRow> rows = readAllRows(iterator)
 
         then:
-        stringfy(rows) == 'r:1,cs:[r:A1,t:s,v:0;r:B1,t:s,v:1;r:C1,t:s,v:2;r:D1,t:s,v:3;];' +
-                'r:2,cs:[r:A2,t:inlineStr,v:hello world;];' +
-                'r:3,cs:[r:A3,t:s,v:5;];' +
-                'r:5,cs:[r:A5,t:s,v:4;];'
+        stringfy(rows) == 'r:1,cs:[r:A,t:s,v:0;r:B,t:s,v:1;r:C,t:s,v:2;r:D,t:s,v:3;];' +
+                'r:2,cs:[r:A,t:inlineStr,v:hello world;];' +
+                'r:3,cs:[r:A,t:s,v:5;];' +
+                'r:5,cs:[r:A,t:s,v:4;];'
     }
 
     List<RawRow> readAllRows(XmlRawRawRowIterator iterator) {
