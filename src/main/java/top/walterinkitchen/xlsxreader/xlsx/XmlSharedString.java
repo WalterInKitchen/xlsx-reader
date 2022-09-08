@@ -39,7 +39,7 @@ public class XmlSharedString implements SharedString {
             return null;
         }
         if (index >= this.cached.size()) {
-            cacheStringToIndex(index);
+            cacheStringAtIndex(index);
         }
         if (index >= this.cached.size()) {
             return null;
@@ -47,9 +47,8 @@ public class XmlSharedString implements SharedString {
         return this.cached.get(index);
     }
 
-    private void cacheStringToIndex(int readTo) {
-        int curIdx = this.cached.size();
-        while (this.eventReader.hasNext() && curIdx <= readTo) {
+    private void cacheStringAtIndex(int readTo) {
+        while (this.eventReader.hasNext() && this.cached.size() <= readTo) {
             try {
                 XMLEvent evt = this.eventReader.nextEvent();
                 if (isStartOfEvent(evt, "si")) {
@@ -69,45 +68,73 @@ public class XmlSharedString implements SharedString {
             }
             if (isStartOfEvent(evt, "t")) {
                 readValueInT();
-                readToTillEnd("t");
+                readTillEnd("t");
                 break;
             }
             if (isStartOfEvent(evt, "r")) {
-                readValueInR();
-                readToTillEnd("r");
-                break;
+                readAllRValues(evt, "si");
+                return;
             }
         }
-        readToTillEnd("si");
+        readTillEnd("si");
     }
 
-    private void readValueInR() throws XMLStreamException {
+    private void readAllRValues(XMLEvent evt, String end) throws XMLStreamException {
+        StringBuilder builder = new StringBuilder();
+        while (this.eventReader.hasNext()) {
+            if (isEndOfEvent(evt, end)) {
+                break;
+            }
+            String val = readTInR(end);
+            if (val == null) {
+                break;
+            }
+            builder.append(val);
+        }
+        if (builder.length() > 0) {
+            this.cached.add(builder.toString());
+        }
+    }
+
+    private String readTInR(String end) throws XMLStreamException {
+        String res = null;
         while (this.eventReader.hasNext()) {
             XMLEvent evt = this.eventReader.nextEvent();
+            if (isEndOfEvent(evt, end)) {
+                break;
+            }
             if (isStartOfEvent(evt, "t")) {
-                readValueInT();
-                readToTillEnd("r");
+                res = readStringValueInT();
+                readTillEnd("r");
                 break;
             }
             if (isEndOfEvent(evt, "r")) {
                 break;
             }
         }
+        return res;
     }
 
     private void readValueInT() throws XMLStreamException {
-        if (!this.eventReader.hasNext()) {
+        String val = readStringValueInT();
+        if (val == null) {
             return;
+        }
+        this.cached.add(val);
+    }
+
+    private String readStringValueInT() throws XMLStreamException {
+        if (!this.eventReader.hasNext()) {
+            return null;
         }
         XMLEvent next = this.eventReader.nextEvent();
         if (!next.isCharacters()) {
-            return;
+            return null;
         }
-        String str = next.asCharacters().getData();
-        this.cached.add(str);
+        return next.asCharacters().getData();
     }
 
-    private void readToTillEnd(String type) throws XMLStreamException {
+    private void readTillEnd(String type) throws XMLStreamException {
         while (this.eventReader.hasNext()) {
             XMLEvent evt = this.eventReader.nextEvent();
             if (isEndOfEvent(evt, type)) {

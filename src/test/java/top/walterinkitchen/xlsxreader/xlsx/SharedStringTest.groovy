@@ -30,9 +30,9 @@ class SharedStringTest extends Specification {
         4     | 'AA'
         7     | 'DD'
         5     | 'AB'
-        6     | 'CC'
+        6     | 'CCStates'
         7     | 'DD'
-        9     | '[清] 曹雪芹 著 / 高鹗 续'
+        8     | '[清] 曹雪芹 著 / 高鹗 续'
     }
 
     def 'get string by index return null value if index not exist'() {
