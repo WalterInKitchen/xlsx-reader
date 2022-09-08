@@ -1,5 +1,6 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import top.walterinkitchen.xlsxreader.EntityMapper;
@@ -7,13 +8,11 @@ import top.walterinkitchen.xlsxreader.annotaton.Column;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +25,7 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
     private final Class<T> tClass;
     private final EntityMapper<T> entityMapper;
     private final SharedString sharedString;
-    private final Map<String, String> headers = new HashMap<>();
-
-    private Set<String> columns = null;
+    private HeaderColumns headerColumns = null;
 
     /**
      * constructor
@@ -48,11 +45,29 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
         if (row == null) {
             return Optional.empty();
         }
-        if (this.headers.isEmpty()) {
+        if (headerColumns == null) {
             this.parseHeader(row);
             return Optional.empty();
         }
-        return Optional.empty();
+        Map<String, Object> source = parseRow(row);
+        if (source.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(entityMapper.map(source));
+    }
+
+    private Map<String, Object> parseRow(RawRow row) {
+        List<RawCell> cells = row.getCells();
+        Map<String, Object> res = new HashMap<>();
+        for (RawCell cell : cells) {
+            CellValue cv = buildCellValue(cell);
+            String key = this.headerColumns.getFieldNameByColumn(cv.getColumn());
+            if (key == null || key.equals("")) {
+                continue;
+            }
+            res.put(key, cv.getValue());
+        }
+        return res;
     }
 
     private void parseHeader(RawRow row) {
@@ -61,19 +76,20 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
             return;
         }
         List<CellValue> cellValues = cells.stream().map(this::buildCellValue).collect(Collectors.toList());
-        Set<String> columns = parseColumns();
+        HeaderColumns columns = parseColumns();
         List<CellValue> headerCells = cellValues.stream()
-                .filter(cl -> columns.contains(cl.value))
+                .filter(cl -> cl.getColumn() != null)
+                .filter(cl -> columns.containsColumnName(cl.value))
                 .collect(Collectors.toList());
         if (headerCells.size() == 0) {
             return;
         }
-        cacheHeaders(headerCells);
+        cacheHeaders(headerCells, columns);
     }
 
-    private void cacheHeaders(List<CellValue> headerCells) {
+    private void cacheHeaders(List<CellValue> headerCells, HeaderColumns columns) {
         for (CellValue headerCell : headerCells) {
-            this.headers.put(headerCell.column, headerCell.value);
+            columns.registerColumn(headerCell.column, headerCell.value);
         }
     }
 
@@ -93,24 +109,64 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
         return this.sharedString.getByIndex(idx);
     }
 
-    private Set<String> parseColumns() {
-        if (this.columns != null) {
-            return this.columns;
+    private HeaderColumns parseColumns() {
+        if (this.headerColumns != null) {
+            return this.headerColumns;
         }
         Field[] fields = this.tClass.getDeclaredFields();
-        this.columns = Collections.unmodifiableSet(
-                Arrays.stream(fields).map(this::findColumn)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet()));
-        return this.columns;
+        List<ColumnField> columnFieldPairs = Arrays.stream(fields)
+                .map(this::findColumn)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        this.headerColumns = HeaderColumns.build(columnFieldPairs);
+        return this.headerColumns;
     }
 
-    private String findColumn(Field fd) {
+    private ColumnField findColumn(Field fd) {
         Column annotation = fd.getAnnotation(Column.class);
         if (annotation == null) {
             return null;
         }
-        return annotation.name();
+        String colName = annotation.name();
+        String fieldName = fd.getName();
+        return new ColumnField(colName, fieldName);
+    }
+
+    private static class HeaderColumns {
+        private final Map<String, String> colNameVsFieldName;
+        private final Map<String, String> colPosVsFieldName = new HashMap<>();
+
+        private HeaderColumns(Map<String, String> colNameVsFieldName) {
+            this.colNameVsFieldName = colNameVsFieldName;
+        }
+
+        public static HeaderColumns build(List<ColumnField> columnFields) {
+            Map<String, String> colVsField = new HashMap<>();
+            for (ColumnField colField : columnFields) {
+                colVsField.put(colField.getColumnName(), colField.getFieldName());
+            }
+            return new HeaderColumns(colVsField);
+        }
+
+        public boolean containsColumnName(String columnName) {
+            return this.colNameVsFieldName.containsKey(columnName);
+        }
+
+        public void registerColumn(String columnPos, String columnName) {
+            String fieldName = this.colNameVsFieldName.get(columnName);
+            this.colPosVsFieldName.put(columnPos, fieldName);
+        }
+
+        public String getFieldNameByColumn(String columnPos) {
+            return colPosVsFieldName.getOrDefault(columnPos, null);
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class ColumnField {
+        private String columnName;
+        private String fieldName;
     }
 
     @Getter

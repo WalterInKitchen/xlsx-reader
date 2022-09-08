@@ -1,6 +1,9 @@
 package top.walterinkitchen.xlsxreader.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.walterinkitchen.xlsxreader.annotaton.Column;
 import top.walterinkitchen.xlsxreader.annotaton.Sheet;
 
@@ -12,6 +15,9 @@ import top.walterinkitchen.xlsxreader.annotaton.Sheet;
  */
 @Data
 @Sheet
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     @Column(name = "NAME")
     private String name;
