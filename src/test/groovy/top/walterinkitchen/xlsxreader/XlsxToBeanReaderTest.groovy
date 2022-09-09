@@ -1,5 +1,6 @@
 package top.walterinkitchen.xlsxreader
 
+import org.apache.commons.io.IOUtils
 import spock.lang.Specification
 import top.walterinkitchen.xlsxreader.bean.Book
 import top.walterinkitchen.xlsxreader.bean.BookIndex1
@@ -32,6 +33,9 @@ class XlsxToBeanReaderTest extends Specification {
         stringfyBook(books[7]) == 'name:小王子,author:[法国] 安东尼·德·圣-埃克苏佩里,isbn:9787020042494'
         stringfyBook(books[8]) == 'name:呐喊,author:鲁迅,isbn:10019-1979'
         stringfyBook(books[9]) == 'name:人类简史,author:[以色列] 尤瓦尔·赫拉利,isbn:9787508647357'
+
+        cleanup:
+        IOUtils.closeQuietly(entityIterator)
     }
 
     def 'read at sheet2 when sheet annotation config at sheet2'() {
@@ -54,6 +58,9 @@ class XlsxToBeanReaderTest extends Specification {
         stringfyBook(books[7]) == 'name:小王子,author:[法国] 安东尼·德·圣-埃克苏佩里,isbn:9787020042494'
         stringfyBook(books[8]) == 'name:呐喊,author:鲁迅,isbn:10019-1979'
         stringfyBook(books[9]) == 'name:人类简史,author:[以色列] 尤瓦尔·赫拉利,isbn:9787508647357'
+
+        cleanup:
+        IOUtils.closeQuietly(entityIterator)
     }
 
     def 'read at sheet at index2 when sheet annotation config as index with index2'() {
@@ -76,6 +83,9 @@ class XlsxToBeanReaderTest extends Specification {
         stringfyBook(books[7]) == 'name:小王子,author:[法国] 安东尼·德·圣-埃克苏佩里,isbn:9787020042494'
         stringfyBook(books[8]) == 'name:呐喊,author:鲁迅,isbn:10019-1979'
         stringfyBook(books[9]) == 'name:人类简史,author:[以色列] 尤瓦尔·赫拉利,isbn:9787508647357'
+
+        cleanup:
+        IOUtils.closeQuietly(entityIterator)
     }
 
     def 'read at sheet at index1 when sheet annotation config as index with index1'() {
@@ -98,6 +108,9 @@ class XlsxToBeanReaderTest extends Specification {
         stringfyBook(books[7]) == 'name:小王子,author:[法国] 安东尼·德·圣-埃克苏佩里,isbn:9787020042494'
         stringfyBook(books[8]) == 'name:呐喊,author:鲁迅,isbn:10019-1979'
         stringfyBook(books[9]) == 'name:人类简史,author:[以色列] 尤瓦尔·赫拉利,isbn:9787508647357'
+
+        cleanup:
+        IOUtils.closeQuietly(entityIterator)
     }
 
     String stringfyBook(book) {
