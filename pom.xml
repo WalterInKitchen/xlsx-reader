@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>top.walterinkitchen.utils</groupId>
-    <artifactId>xlsx-reader</artifactId>
+    <artifactId>mini-xlsx-reader</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
