@@ -1,5 +1,7 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import top.walterinkitchen.xlsxreader.ReaderException;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -59,7 +61,7 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 if (!evt.isStartElement()) {
                     continue;
                 }
-                if (!isTypeStartEvt(evt, "row")) {
+                if (isNotTypeStartEvt(evt, "row")) {
                     continue;
                 }
                 StartElement startElement = evt.asStartElement();
@@ -70,7 +72,7 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 List<RawCell> cells = readCells(reader);
                 return RawRow.builder().id(rowId).cells(cells).build();
             } catch (XMLStreamException exc) {
-                throw new RuntimeException(exc);
+                throw new ReaderException("read xml failed", exc);
             }
         }
         return null;
@@ -84,7 +86,7 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 if (isTypeEndEvt(evt, "row")) {
                     break;
                 }
-                if (!isTypeStartEvt(evt, "c")) {
+                if (isNotTypeStartEvt(evt, "c")) {
                     continue;
                 }
                 StartElement startElement = evt.asStartElement();
@@ -94,7 +96,7 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 }
                 result.add(cell);
             } catch (XMLStreamException exc) {
-                throw new RuntimeException(exc);
+                throw new ReaderException("read xml failed", exc);
             }
         }
         return result;
@@ -135,25 +137,25 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 if (isTypeEndEvt(evt, "c") || isTypeEndEvt(evt, "row")) {
                     return null;
                 }
-                if (!isTypeStartEvt(evt, "v") && !isTypeStartEvt(evt, "t")) {
+                if (isNotTypeStartEvt(evt, "v") && isNotTypeStartEvt(evt, "t")) {
                     continue;
                 }
                 XMLEvent nextEvt = reader.nextEvent();
                 return nextEvt.asCharacters().getData();
             } catch (XMLStreamException exc) {
-                throw new RuntimeException(exc);
+                throw new ReaderException("read xml failed", exc);
             }
         }
         return null;
     }
 
-    private boolean isTypeStartEvt(XMLEvent evt, String type) {
+    private boolean isNotTypeStartEvt(XMLEvent evt, String type) {
         if (!evt.isStartElement()) {
-            return false;
+            return true;
         }
         StartElement startEvt = evt.asStartElement();
         String typeName = startEvt.getName().getLocalPart();
-        return typeName.equals(type);
+        return !typeName.equals(type);
     }
 
     private boolean isTypeEndEvt(XMLEvent evt, String type) {
@@ -179,11 +181,12 @@ public class XmlRawRawRowIterator implements RawRowIterator {
             return;
         }
 
-        XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             this.reader = factory.createXMLEventReader(new FileInputStream(this.xmlSheet));
         } catch (XMLStreamException | FileNotFoundException exc) {
-            throw new RuntimeException(exc);
+            throw new ReaderException("init xml reader failed", exc);
         }
     }
 }

@@ -30,7 +30,7 @@ public class CommonEntityMapper<T> implements EntityMapper<T> {
             String str = mapper.writeValueAsString(source);
             return mapper.readValue(str, tClass);
         } catch (JsonProcessingException exc) {
-            throw new RuntimeException(exc);
+            throw new ReaderException("map entity failed", exc);
         }
     }
 }

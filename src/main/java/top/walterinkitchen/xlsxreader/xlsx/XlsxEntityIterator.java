@@ -2,6 +2,7 @@ package top.walterinkitchen.xlsxreader.xlsx;
 
 import org.apache.commons.io.IOUtils;
 import top.walterinkitchen.xlsxreader.EntityIterator;
+import top.walterinkitchen.xlsxreader.ReaderException;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -42,7 +43,7 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
     @Override
     public T next() {
         if (this.deque.isEmpty()) {
-            throw new RuntimeException("no more to read");
+            throw new ReaderException("no more to read", null);
         }
         T res = this.deque.removeLast();
         this.readNext();

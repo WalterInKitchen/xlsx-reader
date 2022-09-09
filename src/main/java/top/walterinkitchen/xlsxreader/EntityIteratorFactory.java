@@ -36,7 +36,7 @@ public class EntityIteratorFactory {
         XlsxFileContainer container = XlsxFileContainerFactory.createDeCompressedXlsxFile(file);
         Optional<File> sharedStringsFile = container.getSharedStrings();
         if (!sharedStringsFile.isPresent()) {
-            throw new RuntimeException("sharedStrings not exist");
+            throw new ReaderException("sharedStrings not exist", null);
         }
         XmlRawRawRowIterator rowIterator = RowIteratorFactory.buildRawRowIterator(getXmlSheetFile(container, tClass));
         SharedString xmlSharedString = SharedStringFactory.createXmlSharedString(sharedStringsFile.get());
@@ -59,7 +59,7 @@ public class EntityIteratorFactory {
     private static File getSheetByName(XlsxFileContainer container, String name) {
         Optional<File> sheet = container.getSheet(name);
         if (!sheet.isPresent()) {
-            throw new RuntimeException(String.format("%s not exist", name));
+            throw new ReaderException(String.format("%s not exist", name), null);
         }
         return sheet.get();
     }
@@ -67,7 +67,7 @@ public class EntityIteratorFactory {
     private static File getSheetByIndex(XlsxFileContainer container, int index) {
         Optional<File> sheetFile = container.getSheetById(index);
         if (!sheetFile.isPresent()) {
-            throw new RuntimeException(String.format("sheet%s not exist", index));
+            throw new ReaderException(String.format("sheet%s not exist", index), null);
         }
         return sheetFile.get();
     }

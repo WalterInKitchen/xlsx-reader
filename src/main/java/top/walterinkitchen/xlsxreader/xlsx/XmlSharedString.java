@@ -1,5 +1,7 @@
 package top.walterinkitchen.xlsxreader.xlsx;
 
+import top.walterinkitchen.xlsxreader.ReaderException;
+
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -55,7 +57,7 @@ public class XmlSharedString implements SharedString {
                     readValueInSi();
                 }
             } catch (XMLStreamException exc) {
-                throw new RuntimeException(exc);
+                throw new ReaderException("read xml failed", exc);
             }
         }
     }
@@ -163,11 +165,12 @@ public class XmlSharedString implements SharedString {
         if (this.eventReader != null) {
             return;
         }
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         try {
-            this.eventReader = xmlInputFactory.createXMLEventReader(new FileInputStream(xmlFile));
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            this.eventReader = factory.createXMLEventReader(new FileInputStream(xmlFile));
         } catch (XMLStreamException | FileNotFoundException exc) {
-            throw new RuntimeException(exc);
+            throw new ReaderException("create event reader failed", exc);
         }
     }
 }

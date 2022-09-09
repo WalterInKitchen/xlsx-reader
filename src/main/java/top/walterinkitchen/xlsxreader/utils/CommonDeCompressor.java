@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import top.walterinkitchen.xlsxreader.ReaderException;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class CommonDeCompressor implements DeCompressor {
             zipFile.extractAll(folder.getAbsolutePath());
             return folder;
         } catch (IOException exc) {
-            throw new RuntimeException(exc);
+            throw new ReaderException("extract xlsx failed", exc);
         } finally {
             IOUtils.closeQuietly(zipFile);
         }

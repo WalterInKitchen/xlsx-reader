@@ -6,6 +6,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import top.walterinkitchen.xlsxreader.ReaderException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -94,7 +95,7 @@ public class DecompressedXlsxFile implements XlsxFileContainer {
             Node item = workbook.item(0);
             return getSheetNameInWorkBook(item);
         } catch (ParserConfigurationException | IOException | SAXException exc) {
-            throw new RuntimeException(exc);
+            throw new ReaderException("load sheet failed", exc);
         }
     }
 
