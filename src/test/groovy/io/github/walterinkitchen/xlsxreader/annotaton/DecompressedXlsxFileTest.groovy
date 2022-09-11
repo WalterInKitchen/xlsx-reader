@@ -1,6 +1,6 @@
 package io.github.walterinkitchen.xlsxreader.annotaton
 
-
+import io.github.walterinkitchen.xlsxreader.ResourceFileUtils
 import org.apache.commons.io.IOUtils
 import spock.lang.Specification
 import io.github.walterinkitchen.xlsxreader.xlsx.XlsxFileContainerFactory
@@ -13,7 +13,7 @@ import io.github.walterinkitchen.xlsxreader.xlsx.XlsxFileContainerFactory
 class DecompressedXlsxFileTest extends Specification {
     def 'get sheet by id return sheet file if sheet exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/docs.xlsx')
         def deCompressed = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         when:
@@ -36,7 +36,7 @@ class DecompressedXlsxFileTest extends Specification {
 
     def 'get sheet by id return empty if sheet not exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/docs.xlsx')
         def deCompressed = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         when:
@@ -52,7 +52,7 @@ class DecompressedXlsxFileTest extends Specification {
 
     def 'get sheet by name return sheet file if sheet exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/docs.xlsx')
         def deCompressed = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         when:
@@ -75,7 +75,7 @@ class DecompressedXlsxFileTest extends Specification {
 
     def 'get sheet by name return empty file if sheet not exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/docs.xlsx')
         def deCompressed = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         when:
@@ -90,7 +90,7 @@ class DecompressedXlsxFileTest extends Specification {
 
     def 'get sharedStrings return sharedString file'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/docs.xlsx')
         def deCompressedXlsxFile = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         when:

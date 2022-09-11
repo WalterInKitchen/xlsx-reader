@@ -1,6 +1,7 @@
 package io.github.walterinkitchen.xlsxreader
 
-
+import io.github.walterinkitchen.xlsxreader.bean.BookIndex1
+import io.github.walterinkitchen.xlsxreader.bean.BookIndex2
 import org.apache.commons.io.IOUtils
 import spock.lang.Specification
 import io.github.walterinkitchen.xlsxreader.bean.Book
@@ -65,10 +66,10 @@ class XlsxToBeanReaderTest extends Specification {
     def 'read at sheet at index2 when sheet annotation config as index with index2'() {
         given:
         File file = ResourceFileUtils.getResources('xlsx/books.xlsx');
-        EntityIterator<io.github.walterinkitchen.xlsxreader.bean.BookIndex2> entityIterator = EntityIteratorFactory.buildXlsxEntityIterator(file, io.github.walterinkitchen.xlsxreader.bean.BookIndex2.class);
+        EntityIterator<BookIndex2> entityIterator = EntityIteratorFactory.buildXlsxEntityIterator(file, BookIndex2.class);
 
         when:
-        List<io.github.walterinkitchen.xlsxreader.bean.BookIndex2> books = readAllInIterator(entityIterator);
+        List<BookIndex2> books = readAllInIterator(entityIterator);
 
         then:
         books.size() == 10
@@ -90,10 +91,10 @@ class XlsxToBeanReaderTest extends Specification {
     def 'read at sheet at index1 when sheet annotation config as index with index1'() {
         given:
         File file = ResourceFileUtils.getResources('xlsx/books.xlsx');
-        EntityIterator<io.github.walterinkitchen.xlsxreader.bean.BookIndex1> entityIterator = EntityIteratorFactory.buildXlsxEntityIterator(file, io.github.walterinkitchen.xlsxreader.bean.BookIndex1.class);
+        EntityIterator<BookIndex1> entityIterator = EntityIteratorFactory.buildXlsxEntityIterator(file, BookIndex1.class);
 
         when:
-        List<io.github.walterinkitchen.xlsxreader.bean.BookIndex1> books = readAllInIterator(entityIterator);
+        List<BookIndex1> books = readAllInIterator(entityIterator);
 
         then:
         books.size() == 10

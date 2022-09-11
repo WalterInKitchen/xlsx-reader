@@ -1,6 +1,6 @@
 package io.github.walterinkitchen.xlsxreader.xlsx
 
-
+import io.github.walterinkitchen.xlsxreader.ResourceFileUtils
 import spock.lang.Specification
 
 /**
@@ -12,7 +12,7 @@ import spock.lang.Specification
 class SharedStringTest extends Specification {
     def 'get string by index return string value if index exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/sharedStrings.xml')
+        def file = ResourceFileUtils.getResources('xlsx/sharedStrings.xml')
         def sharedString = SharedStringFactory.createXmlSharedString(file)
 
         when:
@@ -37,7 +37,7 @@ class SharedStringTest extends Specification {
 
     def 'get string by index return null value if index not exist'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/sharedStrings.xml')
+        def file = ResourceFileUtils.getResources('xlsx/sharedStrings.xml')
         def sharedString = SharedStringFactory.createXmlSharedString(file)
 
         when:

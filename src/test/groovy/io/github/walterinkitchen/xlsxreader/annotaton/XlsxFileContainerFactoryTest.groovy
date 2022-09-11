@@ -1,6 +1,8 @@
 package io.github.walterinkitchen.xlsxreader.annotaton
 
-
+import io.github.walterinkitchen.xlsxreader.ResourceFileUtils
+import io.github.walterinkitchen.xlsxreader.xlsx.DecompressedXlsxFile
+import io.github.walterinkitchen.xlsxreader.xlsx.XlsxFileContainerFactory
 import org.apache.commons.io.IOUtils
 import spock.lang.Specification
 
@@ -12,13 +14,13 @@ import spock.lang.Specification
 class XlsxFileContainerFactoryTest extends Specification {
     def 'deCompressedXlsxFile is instance of DecompressedXlsxFile'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/books.xlsx')
+        def file = ResourceFileUtils.getResources('xlsx/books.xlsx')
 
         when:
-        def container = io.github.walterinkitchen.xlsxreader.xlsx.XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
+        def container = XlsxFileContainerFactory.createDeCompressedXlsxFile(file)
 
         then:
-        container instanceof io.github.walterinkitchen.xlsxreader.xlsx.DecompressedXlsxFile
+        container instanceof DecompressedXlsxFile
 
         cleanup:
         IOUtils.closeQuietly(container)

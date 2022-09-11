@@ -1,6 +1,6 @@
 package io.github.walterinkitchen.xlsxreader.utils
 
-
+import io.github.walterinkitchen.xlsxreader.ResourceFileUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Specification
@@ -22,7 +22,7 @@ class DeCompressorFactoryTest extends Specification {
     def 'unzip an zip file return an folder contains all content files'() {
         given:
         def deCompressor = DeCompressorFactory.getInstance()
-        def zip = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/docs.xlsx')
+        def zip = ResourceFileUtils.getResources('xlsx/docs.xlsx')
 
         when:
         def folder = deCompressor.decompressZip(zip)

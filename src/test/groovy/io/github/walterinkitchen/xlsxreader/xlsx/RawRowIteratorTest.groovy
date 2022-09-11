@@ -1,6 +1,6 @@
 package io.github.walterinkitchen.xlsxreader.xlsx
 
-
+import io.github.walterinkitchen.xlsxreader.ResourceFileUtils
 import spock.lang.Specification
 
 /**
@@ -11,7 +11,7 @@ import spock.lang.Specification
 class RawRowIteratorTest extends Specification {
     def 'read row from sheet.xml return row with correct cells'() {
         given:
-        def file = io.github.walterinkitchen.xlsxreader.ResourceFileUtils.getResources('xlsx/sheet1.xml')
+        def file = ResourceFileUtils.getResources('xlsx/sheet1.xml')
         def iterator = RowIteratorFactory.buildRawRowIterator(file)
 
         when:
