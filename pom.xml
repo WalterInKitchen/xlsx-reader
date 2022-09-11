@@ -11,6 +11,24 @@
     <name>mini-xlsx-reader</name>
     <url>https://github.com/WalterInKitchen/xlsx-reader</url>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://mit-license.org/</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>walter</name>
+            <email>walterInKitchen@outlook.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <scm>
         <connection>git@github.com:WalterInKitchen/xlsx-reader.git</connection>
         <url>https://github.com/WalterInKitchen/xlsx-reader.git</url>
