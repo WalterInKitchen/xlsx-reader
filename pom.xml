@@ -4,7 +4,7 @@
 
     <groupId>io.github.walterinkitchen</groupId>
     <artifactId>mini-xlsx-reader</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <description>a low-memory xlsx reader</description>
 
