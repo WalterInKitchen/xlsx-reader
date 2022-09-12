@@ -1,6 +1,5 @@
 package io.github.walterinkitchen.xlsxreader;
 
-import java.io.Closeable;
 import java.util.Iterator;
 
 /**
@@ -9,5 +8,5 @@ import java.util.Iterator;
  * @author walter
  * @since 1.0
  */
-public interface EntityIterator<T> extends Iterator<T>, Closeable {
+public interface EntityIterator<T> extends Iterator<T>, AutoCloseable{
 }
