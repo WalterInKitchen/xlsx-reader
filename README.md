@@ -16,22 +16,26 @@ xlsx-reader适用于以较小的内存占用从xlsx格式的文件中读入java�
 </dependency>
 ```
 
-定义一个我们要从xlsx中读出的类
+我们希望从下面的xlsx文件中读出所有的people对象。
+
+![image-20220913224718431](assets/image-20220913224718431.png)
+
+定义一个我们要从xlsx中读出的类；
 
 ```java
 @Data
 @Sheet
 public class People {
-    @Column(name = "id")
+    @Column(name = "id")       //映射到id列
     private String id;
 
-    @Column(name = "name")
+    @Column(name = "name")	   //映射到name列
     private String name;
 
-    @Column(name = "country")
+    @Column(name = "country")	 //映射到country列
     private String country;
 
-    @Column(name = "gender")
+    @Column(name = "gender")	 //映射到gender列
     private String gender;
 }
 ```
