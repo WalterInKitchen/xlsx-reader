@@ -16,14 +16,17 @@ import java.net.URL;
 public class MiniReader {
     public static void main(String[] args) throws URISyntaxException {
         File file = openFile("people.xlsx");
-        EntityIterator<People> iterator = EntityIteratorFactory.buildXlsxEntityIterator(file, People.class);
-        while (iterator.hasNext()) {
-            People next = iterator.next();
-            System.out.println(next);
+        try (EntityIterator<People> iterator = EntityIteratorFactory.buildXlsxEntityIterator(file, People.class)) {
+            while (iterator.hasNext()) {
+                People next = iterator.next();
+                System.out.println(next);
+            }
+            long total = Runtime.getRuntime().totalMemory() / (1024 * 1024);
+            long max = Runtime.getRuntime().maxMemory() / (1024 * 1024);
+            System.out.println("total:" + total + " max:" + max);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        long total = Runtime.getRuntime().totalMemory();
-        long max = Runtime.getRuntime().maxMemory();
-        System.out.println("total:" + total + " max:" + max);
     }
 
     private static File openFile(String srcFile) throws URISyntaxException {
