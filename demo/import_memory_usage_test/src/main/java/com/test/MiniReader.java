@@ -2,10 +2,12 @@ package com.test;
 
 import io.github.walterinkitchen.xlsxreader.EntityIterator;
 import io.github.walterinkitchen.xlsxreader.EntityIteratorFactory;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 /**
  * MiniReader
@@ -17,13 +19,20 @@ public class MiniReader {
     public static void main(String[] args) throws URISyntaxException {
         File file = openFile("people.xlsx");
         try (EntityIterator<People> iterator = EntityIteratorFactory.buildXlsxEntityIterator(file, People.class)) {
+            int counter = 0;
+            StopWatch stopWatch = StopWatch.create();
+            stopWatch.start();
             while (iterator.hasNext()) {
                 People next = iterator.next();
                 System.out.println(next);
+                counter++;
             }
             long total = Runtime.getRuntime().totalMemory() / (1024 * 1024);
             long max = Runtime.getRuntime().maxMemory() / (1024 * 1024);
-            System.out.println("total:" + total + " max:" + max);
+            stopWatch.stop();
+            System.out.println("timeUsed:" + stopWatch.getTime(TimeUnit.SECONDS) + " seconds");
+            System.out.println("counter:" + counter);
+            System.out.println("total:" + total + "MB max:" + max + "MB");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
