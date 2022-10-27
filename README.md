@@ -12,7 +12,7 @@ xlsx-reader适用于以较小的内存占用从xlsx格式的文件中读入java�
 <dependency>
   <groupId>io.github.walterinkitchen</groupId>
   <artifactId>mini-xlsx-reader</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
