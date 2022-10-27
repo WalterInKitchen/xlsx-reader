@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import io.github.walterinkitchen.xlsxreader.EntityMapper;
 import io.github.walterinkitchen.xlsxreader.annotaton.Column;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -130,6 +132,13 @@ public class AnnotationRowToEntityMapper<T> implements RowToEntityMapper<T> {
         String colName = annotation.name();
         String fieldName = fd.getName();
         return new ColumnField(colName, fieldName);
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (this.sharedString != null) {
+            IOUtils.closeQuietly(this.sharedString);
+        }
     }
 
     private static class HeaderColumns {

@@ -1,6 +1,7 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
 import io.github.walterinkitchen.xlsxreader.ReaderException;
+import org.apache.commons.io.FileUtils;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -11,6 +12,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,5 +174,17 @@ public class XmlSharedString implements SharedString {
         } catch (XMLStreamException | FileNotFoundException exc) {
             throw new ReaderException("create event reader failed", exc);
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (this.eventReader != null) {
+            try {
+                this.eventReader.close();
+            } catch (XMLStreamException exc) {
+                throw new RuntimeException(exc);
+            }
+        }
+        FileUtils.deleteQuietly(this.xmlFile);
     }
 }

@@ -1,12 +1,14 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
+import java.io.Closeable;
+
 /**
  * shared string abstract
  *
  * @author walter
  * @since 1.0
  */
-public interface SharedString {
+public interface SharedString extends Closeable {
     /**
      * get string by index
      *

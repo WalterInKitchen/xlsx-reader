@@ -52,6 +52,8 @@ public class XlsxEntityIterator<T> implements EntityIterator<T> {
 
     @Override
     public void close() {
+        IOUtils.closeQuietly(this.entityMapper);
+        IOUtils.closeQuietly(this.rowIterator);
         IOUtils.closeQuietly(this.fileContainer);
     }
 

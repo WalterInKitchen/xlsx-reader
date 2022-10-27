@@ -1,5 +1,6 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
+import java.io.Closeable;
 import java.util.Optional;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Optional;
  * @author walter
  * @since 1.0
  */
-public interface RowToEntityMapper<T> {
+public interface RowToEntityMapper<T> extends Closeable {
     /**
      * map rawRow to entity
      *

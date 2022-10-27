@@ -1,6 +1,7 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
 import io.github.walterinkitchen.xlsxreader.ReaderException;
+import org.apache.commons.io.FileUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -13,6 +14,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -111,10 +113,7 @@ public class XmlRawRawRowIterator implements RawRowIterator {
         String valType = tAttr == null ? "" : tAttr.getValue();
         String value = readOneCellValue(reader);
         String column = parseColumn(rAttr.getValue());
-        return RawCell.builder().column(column)
-                .valueType(valType)
-                .value(value)
-                .build();
+        return RawCell.builder().column(column).valueType(valType).value(value).build();
     }
 
     private String parseColumn(String value) {
@@ -188,5 +187,17 @@ public class XmlRawRawRowIterator implements RawRowIterator {
         } catch (XMLStreamException | FileNotFoundException exc) {
             throw new ReaderException("init xml reader failed", exc);
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (this.reader != null) {
+            try {
+                this.reader.close();
+            } catch (XMLStreamException exc) {
+                throw new RuntimeException(exc);
+            }
+        }
+        FileUtils.deleteQuietly(this.xmlSheet);
     }
 }
