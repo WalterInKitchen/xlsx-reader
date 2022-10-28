@@ -1,7 +1,7 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
 import io.github.walterinkitchen.xlsxreader.ReaderException;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -11,10 +11,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,7 +25,7 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 public class XmlRawRawRowIterator implements RawRowIterator {
-    private final File xmlSheet;
+    private final InputStream sheetIns;
     private RawRow next;
     private XMLEventReader reader;
 
@@ -36,10 +34,10 @@ public class XmlRawRawRowIterator implements RawRowIterator {
     /**
      * constructor
      *
-     * @param xmlSheet sheet file
+     * @param ins ins
      */
-    XmlRawRawRowIterator(File xmlSheet) {
-        this.xmlSheet = xmlSheet;
+    XmlRawRawRowIterator(InputStream ins) {
+        this.sheetIns = ins;
         this.next = this.readNextRow();
     }
 
@@ -140,6 +138,9 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                     continue;
                 }
                 XMLEvent nextEvt = reader.nextEvent();
+                if (!nextEvt.isCharacters()) {
+                    return null;
+                }
                 return nextEvt.asCharacters().getData();
             } catch (XMLStreamException exc) {
                 throw new ReaderException("read xml failed", exc);
@@ -183,8 +184,8 @@ public class XmlRawRawRowIterator implements RawRowIterator {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            this.reader = factory.createXMLEventReader(new FileInputStream(this.xmlSheet));
-        } catch (XMLStreamException | FileNotFoundException exc) {
+            this.reader = factory.createXMLEventReader(this.sheetIns);
+        } catch (XMLStreamException exc) {
             throw new ReaderException("init xml reader failed", exc);
         }
     }
@@ -198,6 +199,6 @@ public class XmlRawRawRowIterator implements RawRowIterator {
                 throw new RuntimeException(exc);
             }
         }
-        FileUtils.deleteQuietly(this.xmlSheet);
+        IOUtils.closeQuietly(this.sheetIns);
     }
 }

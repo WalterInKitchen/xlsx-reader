@@ -1,6 +1,10 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
+import io.github.walterinkitchen.xlsxreader.ReaderException;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * SharedStringFactory
@@ -16,6 +20,11 @@ public class SharedStringFactory {
      * @return instance
      */
     static public SharedString createXmlSharedString(File file) {
-        return new XmlSharedString(file);
+        try {
+            FileInputStream ins = new FileInputStream(file);
+            return new XmlSharedString(ins);
+        } catch (FileNotFoundException exc) {
+            throw new ReaderException("init xml reader failed", exc);
+        }
     }
 }

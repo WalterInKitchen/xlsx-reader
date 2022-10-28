@@ -1,7 +1,7 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
 import io.github.walterinkitchen.xlsxreader.ReaderException;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -9,10 +9,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,17 +21,17 @@ import java.util.List;
  * @since 1.0
  */
 public class XmlSharedString implements SharedString {
-    private final File xmlFile;
+    private final InputStream xmlIns;
     private XMLEventReader eventReader = null;
     private final List<String> cached = new ArrayList<>();
 
     /**
      * constructor
      *
-     * @param xmlFile xml file
+     * @param ins ins
      */
-    XmlSharedString(File xmlFile) {
-        this.xmlFile = xmlFile;
+    XmlSharedString(InputStream ins) {
+        this.xmlIns = ins;
     }
 
     @Override
@@ -170,8 +168,8 @@ public class XmlSharedString implements SharedString {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            this.eventReader = factory.createXMLEventReader(new FileInputStream(xmlFile));
-        } catch (XMLStreamException | FileNotFoundException exc) {
+            this.eventReader = factory.createXMLEventReader(xmlIns);
+        } catch (XMLStreamException exc) {
             throw new ReaderException("create event reader failed", exc);
         }
     }
@@ -185,6 +183,6 @@ public class XmlSharedString implements SharedString {
                 throw new RuntimeException(exc);
             }
         }
-        FileUtils.deleteQuietly(this.xmlFile);
+        IOUtils.closeQuietly(this.xmlIns);
     }
 }

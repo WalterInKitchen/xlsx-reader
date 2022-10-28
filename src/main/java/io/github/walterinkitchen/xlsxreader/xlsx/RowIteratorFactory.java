@@ -1,9 +1,12 @@
 package io.github.walterinkitchen.xlsxreader.xlsx;
 
+import io.github.walterinkitchen.xlsxreader.ReaderException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * RowIteratorFactory
@@ -20,6 +23,11 @@ public class RowIteratorFactory {
      * @return iterator
      */
     public static XmlRawRawRowIterator buildRawRowIterator(File file) {
-        return new XmlRawRawRowIterator(file);
+        try {
+            FileInputStream ins = new FileInputStream(file);
+            return new XmlRawRawRowIterator(ins);
+        } catch (FileNotFoundException exc) {
+            throw new ReaderException("init xml reader failed", exc);
+        }
     }
 }
