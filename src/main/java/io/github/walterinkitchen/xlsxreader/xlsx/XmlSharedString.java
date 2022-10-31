@@ -120,6 +120,7 @@ public class XmlSharedString implements SharedString {
     private void readValueInT() throws XMLStreamException {
         String val = readStringValueInT();
         if (val == null) {
+            this.cached.add(null);
             return;
         }
         this.cached.add(val);

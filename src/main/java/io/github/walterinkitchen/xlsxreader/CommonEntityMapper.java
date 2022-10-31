@@ -1,6 +1,7 @@
 package io.github.walterinkitchen.xlsxreader;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -22,6 +23,7 @@ public class CommonEntityMapper<T> implements EntityMapper<T> {
      */
     CommonEntityMapper(Class<T> tClass) {
         this.tClass = tClass;
+        this.mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
     }
 
     @Override
