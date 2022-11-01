@@ -69,8 +69,10 @@ public class XmlSharedString implements SharedString {
                 return;
             }
             if (isStartOfEvent(evt, "t")) {
-                readValueInT();
-                readTillEnd("t");
+                boolean isEnd = readValueInT();
+                if (!isEnd) {
+                    readTillEnd("t");
+                }
                 break;
             }
             if (isStartOfEvent(evt, "r")) {
@@ -106,7 +108,8 @@ public class XmlSharedString implements SharedString {
                 break;
             }
             if (isStartOfEvent(evt, "t")) {
-                res = readStringValueInT();
+                EleResult ele = readStringValueInT();
+                res = ele.value;
                 readTillEnd("r");
                 break;
             }
@@ -117,24 +120,23 @@ public class XmlSharedString implements SharedString {
         return res;
     }
 
-    private void readValueInT() throws XMLStreamException {
-        String val = readStringValueInT();
-        if (val == null) {
-            this.cached.add(null);
-            return;
-        }
-        this.cached.add(val);
+    private boolean readValueInT() throws XMLStreamException {
+        EleResult res = readStringValueInT();
+        this.cached.add(res.value);
+        return res.end;
     }
 
-    private String readStringValueInT() throws XMLStreamException {
+    private EleResult readStringValueInT() throws XMLStreamException {
         if (!this.eventReader.hasNext()) {
-            return null;
+            return new EleResult(null, false);
         }
         XMLEvent next = this.eventReader.nextEvent();
+        boolean isEnd = next.isEndElement();
         if (!next.isCharacters()) {
-            return null;
+            return new EleResult(null, isEnd);
         }
-        return next.asCharacters().getData();
+        String val = next.asCharacters().getData();
+        return new EleResult(val, isEnd);
     }
 
     private void readTillEnd(String type) throws XMLStreamException {
@@ -185,5 +187,15 @@ public class XmlSharedString implements SharedString {
             }
         }
         IOUtils.closeQuietly(this.xmlIns);
+    }
+
+    private static class EleResult {
+        private final String value;
+        private final boolean end;
+
+        private EleResult(String value, boolean end) {
+            this.value = value;
+            this.end = end;
+        }
     }
 }
